@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryVid | Client Dashboard</title>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #333;
+            --accent: #0066ff;
+            --text: #2d2d2d;
+            --text-light: #777;
+            --bg: #f9f9f9;
+            --card-bg: #fff;
+            --border: #eaeaea;
+            --success: #00a86b;
+            --warning: #ffaa00;
+            --danger: #ff4444;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #f0f0f0;
+            --secondary: #ccc;
+            --accent: #4d8eff;
+            --text: #e0e0e0;
+            --text-light: #aaa;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --border: #333;
+            --success: #00c27e;
+            --warning: #ffc107;
+            --danger: #ff6666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 24px 0;
+            height: 100vh;
+            position: fixed;
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+            padding: 0 24px 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+        
+        .nav-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: var(--accent);
+            background-color: rgba(0, 102, 255, 0.1);
+            border-right: 3px solid var(--accent);
+        }
+        
+        .nav-item:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            padding: 32px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .welcome h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .welcome p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .user-company {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            width: 300px;
+            margin-bottom: 24px;
+        }
+        
+        .search-bar input {
+            border: none;
+            background: transparent;
+            flex: 1;
+            padding: 8px;
+            color: var(--text);
+            outline: none;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+        
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .projects-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .project-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .project-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .project-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .status-review {
+            background-color: rgba(255, 170, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-production {
+            background-color: rgba(0, 102, 255, 0.1);
+            color: var(--accent);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background-color: var(--accent);
+        }
+        
+        .project-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .project-progress {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .project-action {
+            padding: 6px 12px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 1024px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .projects-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                margin-left: 200px;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                z-index: 100;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 24px;
+                color: var(--text);
+                cursor: pointer;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stat-card, .project-card {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        .stat-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        
+        .stat-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+        
+        .project-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">StoryVid</div>
+        <div class="nav-item active">Dashboard</div>
+        <div class="nav-item">Projects</div>
+        <div class="nav-item">Asset Library</div>
+        <div class="nav-item">Services</div>
+        <div class="nav-item">Billing & Documents</div>
+        <div class="nav-item">Brand Assets</div>
+        <div class="nav-item">Team</div>
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <div class="welcome">
+                <h1>Welcome back, Alexi</h1>
+                <p>My Company • Dashboard Overview</p>
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-name">Alexi</div>
+                    <div class="user-company">My Company</div>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Search projects, assets...">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Active Projects</h3>
+                <div class="value">2</div>
+                <div class="label">In production</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Approvals</h3>
+                <div class="value">1</div>
+                <div class="label">Requires your review</div>
+            </div>
+            <div class="stat-card">
+                <h3>Delivered Assets</h3>
+                <div class="value">8</div>
+                <div class="label">Completed projects</div>
+            </div>
+        </div>
+        
+        <h2 style="margin-bottom: 16px; font-size: 18px; font-weight: 600;">Recent Projects</h2>
+        <div class="projects-container">
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-title">Brand Story Video Campaign</div>
+                    <div class="project-status status-review">In Review</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%"></div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-progress">75% complete</div>
+                    <button class="project-action">Review</button>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-title">Product Demo Series</div>
+                    <div class="project-status status-production">In Production</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 40%"></div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-progress">40% complete</div>
+                    <button class="project-action">View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="theme-toggle" id="themeToggle">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                if (currentTheme === 'dark') {
+                    document.documentElement.removeAttribute('data-theme');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            });
+            
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+            
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            });
+        });
+    </script>
+</body>
+</html>
